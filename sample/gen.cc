@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "bpf_insn.h"
+#include <bpf_insn.h>
 
 using namespace bpf;
 struct {

@@ -1,33 +1,81 @@
 
-#include <stdio.h>
-#include <stdint.h>
-#include <slankdev/exception.h>
-#include "bpf_insn.h"
 
+#pragma once
+#include <stdint.h>
 
 namespace bpf {
+
 
 struct insn {
     uint16_t  code; /* Operation Code of BPF */
     uint8_t   jt;   /* Jump If True          */
     uint8_t   jf;   /* Jump If False         */
     uint32_t  k;    /* Extra datas           */
-
-    void print() const
-    {
-        printf("    bpf_insn::print: %04x %02x %02x %08x\n", code, jt, jf, k);
-    }
 };
 
-void dissas(bpf::insn* inst, size_t len) {
-    for (size_t i=0; i<len; i++) {
-        printf("(%03u) %04x %02x %02x %08x        ", i,
-            inst[i].code, inst[i].jt, inst[i].jf, inst[i].k);
-        uint16_t code = inst[i].code;
-        uint8_t  jt   = inst[i].jt  ;
-        uint8_t  jf   = inst[i].jf  ;
-        uint32_t k    = inst[i].k   ;
-        switch (inst[i].code) {
+
+enum bpf_code : uint16_t {
+    LD   = 0x0000,
+    LDX  = 0x0001,
+    ST   = 0x0002,
+    STX  = 0x0003,
+
+    /* ld/ldx fields */
+    W    = 0x0000,
+    H    = 0x0008,
+    B    = 0x0010,
+    IMM  = 0x0000,
+    ABS  = 0x0020,
+    IND  = 0x0040,
+    MEM  = 0x0060,
+    LEN  = 0x0080,
+    MSH  = 0x00a0,
+
+    ALU  = 0x0004,
+    JMP  = 0x0005,
+
+    /* alu/jmp fields */
+    ADD  = 0x0000,
+    SUB  = 0x0010,
+    MUL  = 0x0020,
+    DIV  = 0x0030,
+    OR   = 0x0040,
+    AND  = 0x0050,
+    LSH  = 0x0060,
+    RSH  = 0x0070,
+    NEG  = 0x0080,
+    JA   = 0x0000,
+    JEQ  = 0x0010,
+    JGT  = 0x0020,
+    JGE  = 0x0030,
+    JSET = 0x0040,
+    K    = 0x0000,
+    X    = 0x0008,
+
+    RET  = 0x0006,
+
+    /* ret - BPF_K and BPF_X also apply */
+    A    = 0x0010,
+
+    MISC = 0x0007,
+
+    /* misc */
+    TAX  = 0x0000,
+    TXA  = 0x0080,
+
+    NOP  = 0xffff,
+};
+
+
+
+
+void dissas_line(bpf::insn* inst)
+{
+        uint16_t code = inst->code;
+        uint8_t  jt   = inst->jt  ;
+        uint8_t  jf   = inst->jf  ;
+        uint32_t k    = inst->k   ;
+        switch (code) {
             case NOP       : printf("nop"       ); break;
 
             case RET|K     : printf("ret #%u", k); break;
@@ -83,56 +131,25 @@ void dissas(bpf::insn* inst, size_t len) {
 
             default        : printf("unknown"  ); break;
         }
+}
+
+
+
+void dissas(bpf::insn* inst, size_t len)
+{
+    for (size_t i=0; i<len; i++) {
+        printf("(%03u) %04x %02x %02x %08x        ",
+                i, inst[i].code, inst[i].jt, inst[i].jf, inst[i].k);
+        uint16_t code = inst[i].code;
+        uint8_t  jt   = inst[i].jt  ;
+        uint8_t  jf   = inst[i].jf  ;
+        uint32_t k    = inst[i].k   ;
+        dissas_line(&inst[i]);
         printf("\n");
     }
 }
 
+
+
+
 } /* namespace bpf */
-
-
-
-
-int main()
-{
-    struct bpf::insn code[] = {
-#if 0
-    /* tcpdump -dd tcp */
-    { 0x0028, 0, 0, 0x0000000c }, // (000) ldh   [12]
-    { 0x0015, 0, 5, 0x000086dd }, // (001) jeq   #0x86dd  jt 2   jf 7
-    { 0x0030, 0, 0, 0x00000014 }, // (002) ldb   [20]
-    { 0x0015, 6, 0, 0x00000006 }, // (003) jeq   #0x6     jt 10  jf 4
-    { 0x0015, 0, 6, 0x0000002c }, // (004) jeq   #0x2c    jt 5   jf 11
-    { 0x0030, 0, 0, 0x00000036 }, // (005) ldb   [54]
-    { 0x0015, 3, 4, 0x00000006 }, // (006) jeq   #0x6     jt 10  jf 11
-    { 0x0015, 0, 3, 0x00000800 }, // (007) jeq   #0x800   jt 8   jf 11
-    { 0x0030, 0, 0, 0x00000017 }, // (008) ldb   [23]
-    { 0x0015, 0, 1, 0x00000006 }, // (009) jeq   #0x6     jt 10  jf 11
-    { 0x0006, 0, 0, 0x00040000 }, // (010) ret   #262144
-    { 0x0006, 0, 0, 0x00000000 }, // (011) ret   #0
-#else
-    /* tcpdump -dd "tcp port 80"*/
-    { 0x28, 0 , 0 , 0x0000000c }, // (000) ldh   [12]
-    { 0x15, 0 , 6 , 0x000086dd }, // (001) jeq   #0x86dd  jt 2   jf 8
-    { 0x30, 0 , 0 , 0x00000014 }, // (002) ldb   [20]
-    { 0x15, 0 , 15, 0x00000006 }, // (003) jeq   #0x6     jt 4   jf 19
-    { 0x28, 0 , 0 , 0x00000036 }, // (004) ldh   [54]
-    { 0x15, 12, 0 , 0x00000050 }, // (005) jeq   #0x50    jt 18  jf 6
-    { 0x28, 0 , 0 , 0x00000038 }, // (006) ldh   [56]
-    { 0x15, 10, 11, 0x00000050 }, // (007) jeq   #0x50    jt 18  jf 19
-    { 0x15, 0 , 10, 0x00000800 }, // (008) jeq   #0x800   jt 9   jf 19
-    { 0x30, 0 , 0 , 0x00000017 }, // (009) ldb   [23]
-    { 0x15, 0 , 8 , 0x00000006 }, // (010) jeq   #0x6     jt 11  jf 19
-    { 0x28, 0 , 0 , 0x00000014 }, // (011) ldh   [20]
-    { 0x45, 6 , 0 , 0x00001fff }, // (012) jset  #0x1fff  jt 19  jf 13
-    { 0xb1, 0 , 0 , 0x0000000e }, // (013) ldxb  4*([14]&0xf)
-    { 0x48, 0 , 0 , 0x0000000e }, // (014) ldh   [x + 14]
-    { 0x15, 2 , 0 , 0x00000050 }, // (015) jeq   #0x50    jt 18  jf 16
-    { 0x48, 0 , 0 , 0x00000010 }, // (016) ldh   [x + 16]
-    { 0x15, 0 , 1 , 0x00000050 }, // (017) jeq   #0x50    jt 18  jf 19
-    { 0x6 , 0 , 0 , 0x00040000 }, // (018) ret   #262144
-    { 0x6 , 0 , 0 , 0x00000000 }, // (019) ret   #0
-#endif
-    };
-
-    bpf::dissas(code, sizeof(code)/sizeof(code[0]));
-}
