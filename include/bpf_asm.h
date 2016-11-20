@@ -54,5 +54,21 @@ struct bpf::insn pgm_arp_or_ip[] = {
     { 0x0006, 0, 0, 0x00000000 }, // (004) ret   #0
 };
 
+struct bpf::insn pgm_arp[] = {
+    /* tcpdump -dd "arp"*/
+    { 0x28, 0, 0, 0x0000000c }, // (000) ldh     [12]
+    { 0x15, 0, 1, 0x00000806 }, // (001) jeq     #0x806   jt 2   jf 3
+    { 0x6 , 0, 0, 0x00040000 }, // (002) ret     #262144
+    { 0x6 , 0, 0, 0x00000000 }, // (003) ret     #0
+};
+
+struct bpf::insn pgm_not_arp[] = {
+    /* tcpdump -dd "not arp"*/
+    { 0x28, 0, 0, 0x0000000c }, // (000) ldh     [12]
+    { 0x15, 0, 1, 0x00000806 }, // (001) jeq     #0x806   jt 2   jf 3
+    { 0x6 , 0, 0, 0x00000000 }, // (002) ret     #0
+    { 0x6 , 0, 0, 0x00040000 }, // (003) ret     #262144
+};
+
 
 } /* namespace bpf */

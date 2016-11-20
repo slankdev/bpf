@@ -78,52 +78,52 @@ void dissas_line(bpf::insn* inst)
         switch (code) {
             case NOP       : printf("nop"       ); break;
 
-            case RET|K     : printf("ret #%u", k); break;
-            case RET|A     : printf("ret"       ); break;
+            case RET|K     : printf("ret  #%u", k); break;
+            case RET|A     : printf("ret     "   ); break;
 
-            case LD|W|ABS  : printf("ld [%u]"  , k        ); break;
-            case LD|H|ABS  : printf("ldh [%u]" , k        ); break;
-            case LD|B|ABS  : printf("ldb [%u]" , k        ); break;
-            case LD|W|LEN  : printf("ld #pktlen"          ); break;
-            case LDX|W|LEN : printf("(n/a)"               ); break;
-            case LD|W|IND  : printf("ld [x + %u]" , k     ); break;
-            case LD|H|IND  : printf("ldh [x + %u]", k     ); break;
-            case LD|B|IND  : printf("ldb [x + %u]", k     ); break;
-            case LDX|MSH|B : printf("ldxb 4*([%u]&0xf)", k); break;
-            case LD|IMM    : printf("ld  #%u"  , k        ); break;
-            case LDX|IMM   : printf("ldx #%u"  , k        ); break;
-            case LD|MEM    : printf("ld  M[%u]", k        ); break;
-            case LDX|MEM   : printf("ldx M[%u]", k        ); break;
+            case LD|W|ABS  : printf("ld   [%u]    ", k     ); break;
+            case LD|H|ABS  : printf("ldh  [%u]    ", k     ); break;
+            case LD|B|ABS  : printf("ldb  [%u]    ", k     ); break;
+            case LD|W|LEN  : printf("ld   #pktlen "        ); break;
+            case LDX|W|LEN : printf("(n/a)        "        ); break;
+            case LD|W|IND  : printf("ld   [x + %u]", k     ); break;
+            case LD|H|IND  : printf("ldh  [x + %u]", k     ); break;
+            case LD|B|IND  : printf("ldb  [x + %u]", k     ); break;
+            case LDX|MSH|B : printf("ldxb 4*([%u]&0xf)", k ); break;
+            case LD|IMM    : printf("ld   #%u     ", k     ); break;
+            case LDX|IMM   : printf("ldx  #%u     ", k     ); break;
+            case LD|MEM    : printf("ld   M[%u]   ", k     ); break;
+            case LDX|MEM   : printf("ldx  M[%u]   ", k     ); break;
 
-            case ST        : printf("st  M[%u]", k        ); break;
-            case STX       : printf("stx M[%u]", k        ); break;
+            case ST        : printf("st   M[%u]   ", k     ); break;
+            case STX       : printf("stx  M[%u]   ", k     ); break;
 
-            case JMP|JA    : printf("ja  %u", k                         ); break;
-            case JMP|JGT|K : printf("jgt #0x%x  jt %u  jf %u", k, jt, jf); break;
-            case JMP|JGE|K : printf("jge #0x%x  jt %u  jf %u", k, jt, jf); break;
-            case JMP|JEQ|K : printf("jeq #0x%x  jt %u  jf %u", k, jt, jf); break;
+            case JMP|JA    : printf("ja   %u", k                         ); break;
+            case JMP|JGT|K : printf("jgt  #0x%x  jt %u  jf %u", k, jt, jf); break;
+            case JMP|JGE|K : printf("jge  #0x%x  jt %u  jf %u", k, jt, jf); break;
+            case JMP|JEQ|K : printf("jeq  #0x%x  jt %u  jf %u", k, jt, jf); break;
             case JMP|JSET|K: printf("jset #0x%x jt %u  jf %u", k, jt, jf); break;
             case JMP|JGT|X : printf("jgt  x jt %u  jf %u", jt, jf       ); break;
             case JMP|JGE|X : printf("jge  x jt %u  jf %u", jt, jf       ); break;
             case JMP|JEQ|X : printf("jeq  x jt %u  jf %u", jt, jf       ); break;
             case JMP|JSET|X: printf("jset x jt %u  jf %u", jt, jf       ); break;
 
-            case ALU|ADD|X : printf("add x"    ); break;
-            case ALU|SUB|X : printf("sub x"    ); break;
-            case ALU|MUL|X : printf("mul x"    ); break;
-            case ALU|DIV|X : printf("div x"    ); break;
-            case ALU|AND|X : printf("and x"    ); break;
-            case ALU|OR|X  : printf("or  x"    ); break;
-            case ALU|LSH|X : printf("lsh x"    ); break;
-            case ALU|RSH|X : printf("rsh x"    ); break;
-            case ALU|ADD|K : printf("add %u", k); break;
-            case ALU|SUB|K : printf("sub %u", k); break;
-            case ALU|MUL|K : printf("mul %u", k); break;
-            case ALU|DIV|K : printf("div %u", k); break;
-            case ALU|AND|K : printf("and %u", k); break;
-            case ALU|OR|K  : printf("or  %u", k); break;
-            case ALU|LSH|K : printf("lsh %u", k); break;
-            case ALU|RSH|K : printf("rsh %u", k); break;
+            case ALU|ADD|X : printf("add  x"    ); break;
+            case ALU|SUB|X : printf("sub  x"    ); break;
+            case ALU|MUL|X : printf("mul  x"    ); break;
+            case ALU|DIV|X : printf("div  x"    ); break;
+            case ALU|AND|X : printf("and  x"    ); break;
+            case ALU|OR|X  : printf("or   x"    ); break;
+            case ALU|LSH|X : printf("lsh  x"    ); break;
+            case ALU|RSH|X : printf("rsh  x"    ); break;
+            case ALU|ADD|K : printf("add  %u", k); break;
+            case ALU|SUB|K : printf("sub  %u", k); break;
+            case ALU|MUL|K : printf("mul  %u", k); break;
+            case ALU|DIV|K : printf("div  %u", k); break;
+            case ALU|AND|K : printf("and  %u", k); break;
+            case ALU|OR|K  : printf("or   %u", k); break;
+            case ALU|LSH|K : printf("lsh  %u", k); break;
+            case ALU|RSH|K : printf("rsh  %u", k); break;
             case ALU|NEG   : printf("neg"      ); break;
 
             case MISC|TAX  : printf("tax"      ); break;
@@ -140,10 +140,6 @@ void dissas(bpf::insn* inst, size_t len)
     for (size_t i=0; i<len; i++) {
         printf("(%03u) %04x %02x %02x %08x        ",
                 i, inst[i].code, inst[i].jt, inst[i].jf, inst[i].k);
-        uint16_t code = inst[i].code;
-        uint8_t  jt   = inst[i].jt  ;
-        uint8_t  jf   = inst[i].jf  ;
-        uint32_t k    = inst[i].k   ;
         dissas_line(&inst[i]);
         printf("\n");
     }
