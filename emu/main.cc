@@ -1,21 +1,23 @@
 
+#include <bpf_pgm.h>
+#include <bpf_pack.h>
 #include <bpf_emu.h>
-#include <bpf_asm.h>
 
-uint8_t pack[] = {
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x08, 0x06, 0x00, 0x01,
-    0x08, 0x00, 0x06, 0x04, 0x00, 0x01, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00,
-    0x00, 0x00
-};
 
-#define CREATE_VM(in, code) vm in(code, sizeof(code)/sizeof(code[0]))
 int main()
 {
     using namespace bpf;
-    CREATE_VM(TAKAHITO, pgm_tcp);
-    TAKAHITO.run(pack, sizeof(pack));
+
+    // dict m_bpf;
+    // dict m_org;
+    // dict m_all;
+    // read_dict(m_org, dict_org, sizeof(dict_org)/sizeof(dict_org[0]));
+    // read_dict(m_bpf, dict_bpf, sizeof(dict_bpf)/sizeof(dict_bpf[0]));
+    // m_all.insert(m_bpf.begin(), m_bpf.end());
+    // m_all.insert(m_org.begin(), m_org.end());
+
+    // vm TAKAHITO(pgm_tcp, sizeof(pgm_tcp)/sizeof(pgm_tcp[0]), m_all, NORMAL);
+    vm TAKAHITO(pgm_tcp, sizeof(pgm_tcp)/sizeof(pgm_tcp[0]), NORMAL);
+    uint32_t ret = TAKAHITO.run(pack_tcp, sizeof(pack_tcp));
 }
 

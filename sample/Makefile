@@ -1,6 +1,7 @@
 
 INCLUDE = ../include
 
+def: dis
 
 all:
 	@echo "Usage make [COMMAND]"
