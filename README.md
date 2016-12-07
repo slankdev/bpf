@@ -47,55 +47,62 @@
 
 
 ```
-+-----------------------------------------------------------------------------------------------------------+
-| MNNC | OPCODE     | 0x0000 | DESCRIPTION              | EXCEPT CONDITION                                  |
-+-----------------------------------------------------------------------------------------------------------+
-| ret  | RET|K      | 0x0006 | return k                 |                                                   |
-| ret  | RET|A      | 0x0016 | return A                 |                                                   |
-| ld   | LD|W|ABS   | 0x0020 | A=ntohl(*(i32*)(p+k))    | [k>buflen]or[size_i32>buflen-k]                   |SIGSEGV
-| ldh  | LD|H|ABS   | 0x0028 | A=EXTRACT_SHORT(&p[k])   | [k>buflen]or[size_i16>buflen-k]                   |SIGSEGV
-| ldb  | LD|B|ABS   | 0x0030 | A=p[k]                   | k>=buflen                                         |SIGSEGV
-| ld   | LD|W|LEN   | 0x0080 | A=wirelen                |                                                   |
-| ldx  | LDX|W|LEN  | 0x0081 | X=wirelen                |                                                   |
-| ld   | LD|W|IND   | 0x0040 | A=ntohl(*(i32*)(p+k))    | [k>buflen] or [X>buflen-k] or [size_i32>buflen-k] |SIGSEGV
-| ldh  | LD|H|IND   | 0x0048 | A=EXTRACT_SHORT(&p[k])   | [X>buflen] or [k>buflen-X]or[size_i16>buflen-k]   |SIGSEGV
-| ldb  | LD|B|IND   | 0x0050 | A=p[k]                   | [k>=buflen]or[X>=buflen-k]                        |SIGSEGV
-| ldxb | LDX|MSH|B  | 0x00b1 | X=(p[k]&0xf)<<2          | k>=buflen                                         |SIGSEGV
-| ld   | LD|IMM     | 0x0000 | A=k                      |                                                   |
-| ldx  | LDX|IMM    | 0x0001 | X=k                      |                                                   |
-| ld   | LD|MEM     | 0x0060 | A=mem[k]                 |                                                   |
-| ldx  | LDX|MEM    | 0x0061 | X=mem[k]                 |                                                   |
-| st   | ST         | 0x0002 | mem[k]=A                 |                                                   |
-| stx  | STX        | 0x0003 | mem[k]=X                 |                                                   |
-| ja   | JMP|JA     | 0x0005 | pc+=k                    |                                                   |
-| jgt  | JMP|JGT|K  | 0x0025 | pc+=(A>k)?jt:jf          |                                                   |
-| jge  | JMP|JGE|K  | 0x0035 | pc+=(A>=k)?jt:jf         |                                                   |
-| jeq  | JMP|JEQ|K  | 0x0015 | pc+=(A==k)?jt:jf         |                                                   |
-| jset | JMP|JSET|K | 0x0045 | pc+=(A&k)?jt:jf          |                                                   |
-| jgt  | JMP|JGT|X  | 0x002d | pc+=(A>X)?jt:jf          |                                                   |
-| jge  | JMP|JGE|X  | 0x003d | pc+=(A>=X)?jt:jf         |                                                   |
-| jeq  | JMP|JEQ|X  | 0x001d | pc+=(A==X)?jt:jf         |                                                   |
-| jset | JMP|JSET|X | 0x004d | pc+=(A&X)?jt:jf          |                                                   |
-| add  | ALU|ADD|X  | 0x000c | A+=X                     |                                                   |
-| sub  | ALU|SUB|X  | 0x001c | A-=X                     |                                                   |
-| mul  | ALU|MUL|X  | 0x002c | A*=X                     |                                                   |
-| div  | ALU|DIV|X  | 0x003c | A/=X                     | division by 0                                     |SIGFPE
-| and  | ALU|AND|X  | 0x005c | A&=X                     |                                                   |
-| or   | ALU|OR|X   | 0x004c | A|=X                     |                                                   |
-| lsh  | ALU|LSH|X  | 0x006c | A<<=X                    |                                                   |
-| rsh  | ALU|RSH|X  | 0x007c | A>>=X                    |                                                   |
-| add  | ALU|ADD|K  | 0x0004 | A+=k                     |                                                   |
-| sub  | ALU|SUB|K  | 0x0014 | A-=k                     |                                                   |
-| mul  | ALU|MUL|K  | 0x0024 | A*=k                     |                                                   |
-| div  | ALU|DIV|K  | 0x0034 | A/=k                     |                                                   |
-| and  | ALU|AND|K  | 0x0054 | A&=k                     |                                                   |
-| or   | ALU|OR|K   | 0x0044 | A|=k                     |                                                   |
-| lsh  | ALU|LSH|K  | 0x0064 | A<<=k                    |                                                   |
-| rsh  | ALU|RSH|K  | 0x0074 | A>>=k                    |                                                   |
-| neg  | ALU|NEG    | 0x0084 | A=-A                     |                                                   |
-| tax  | MISC|TAX   | 0x0007 | X=A                      |                                                   |
-| txa  | MISC|TXA   | 0x0087 | A=X                      |                                                   |
-+-----------------------------------------------------------------------------------------------------------+
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+| 0x0000 | MNNC | OPCODE     | DESCRIPTION              | EXCEPT CONDITION                                  | SIG        | FORMAT                         |
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+| 0x0000 | ld   | LD|IMM     | A=k                      |                                                   |            | ld   #0x%-8x                   |
+| 0x0001 | ldx  | LDX|IMM    | X=k                      |                                                   |            | ldx  #0x%-8x                   |
+| 0x0002 | st   | ST         | mem[k]=A                 |                                                   |            | st   M[%u]                     |
+| 0x0003 | stx  | STX        | mem[k]=X                 |                                                   |            | stx  M[%u]                     |
+| 0x0004 | add  | ALU|ADD|K  | A+=k                     |                                                   |            | add  #%u                       |
+| 0x0005 | ja   | JMP|JA     | pc+=k                    |                                                   |            | ja   %u                        |
+| 0x0006 | ret  | RET|K      | return k                 |                                                   |            | ret  #%u                       |
+| 0x0007 | tax  | MISC|TAX   | X=A                      |                                                   |            | tax                            |
+| 0x000c | add  | ALU|ADD|X  | A+=X                     |                                                   |            | add  x                         |
+| 0x0014 | sub  | ALU|SUB|K  | A-=k                     |                                                   |            | sub  #%u                       |
+| 0x0015 | jeq  | JMP|JEQ|K  | pc+=(A==k)?jt:jf         |                                                   |            | jeq  #0x%-8x jt %-3u  jf %-3u  |
+| 0x0016 | ret  | RET|A      | return A                 |                                                   |            | ret                            |
+| 0x001c | sub  | ALU|SUB|X  | A-=X                     |                                                   |            | sub  x                         |
+| 0x001d | jeq  | JMP|JEQ|X  | pc+=(A==X)?jt:jf         |                                                   |            | jeq  x jt %-3u  jt %-3u        |
+| 0x0020 | ld   | LD|W|ABS   | A=ntohl(*(i32*)(p+k))    | [k>buflen]or[size_i32>buflen-k]                   | SIGSEGV    | ld   [%u]                      |
+| 0x0024 | mul  | ALU|MUL|K  | A*=k                     |                                                   |            | mul  #%u                       |
+| 0x0025 | jgt  | JMP|JGT|K  | pc+=(A>k)?jt:jf          |                                                   |            | jgt  #0x%-8x jt %-3u  jf %-3u  |
+| 0x0028 | ldh  | LD|H|ABS   | A=EXTRACT_SHORT(&p[k])   | [k>buflen]or[size_i16>buflen-k]                   | SIGSEGV    | ldh  [%u]                      |
+| 0x002c | mul  | ALU|MUL|X  | A*=X                     |                                                   |            | mul  x                         |
+| 0x002d | jgt  | JMP|JGT|X  | pc+=(A>X)?jt:jf          |                                                   |            | jgt  x jt %-3u  jf %-3u        |
+| 0x0030 | ldb  | LD|B|ABS   | A=p[k]                   | k>=buflen                                         | SIGSEGV    | ldb  [%u]                      |
+| 0x0034 | div  | ALU|DIV|K  | A/=k                     | div 0                                             | SIGFPE     | div  #%u                       |
+| 0x0035 | jge  | JMP|JGE|K  | pc+=(A>=k)?jt:jf         |                                                   |            | jge  #0x%-8x jt %-3u  jf %-3u  |
+| 0x003c | div  | ALU|DIV|X  | A/=X                     | div 0                                             | SIGFPE     | div  x                         |
+| 0x003d | jge  | JMP|JGE|X  | pc+=(A>=X)?jt:jf         |                                                   |            | jge  x jt %-3u  jt %-3u        |
+| 0x0040 | ld   | LD|W|IND   | A=ntohl(*(i32*)(p+k))    | [k>buflen] or [X>buflen-k] or [size_i32>buflen-k] | SIGSEGV    | ld   [%u]                      |
+| 0x0044 | or   | ALU|OR|K   | A|=k                     |                                                   |            | or   #0x%-8x                   |
+| 0x0045 | jset | JMP|JSET|K | pc+=(A&k)?jt:jf          |                                                   |            | jset #0x%-8x jt %-3u  jf %-3u  |
+| 0x0048 | ldh  | LD|H|IND   | A=EXTRACT_SHORT(&p[k])   | [X>buflen] or [k>buflen-X]or[size_i16>buflen-k]   | SIGSEGV    | ldh  [%u]                      |
+| 0x004c | or   | ALU|OR|X   | A|=X                     |                                                   |            | or   x                         |
+| 0x004d | jset | JMP|JSET|X | pc+=(A&X)?jt:jf          |                                                   |            | jset x jt %-3u  jt %-3u        |
+| 0x0050 | ldb  | LD|B|IND   | A=p[k]                   | [k>=buflen]or[X>=buflen-k]                        | SIGSEGV    | ldb  [%u]                      |
+| 0x0054 | and  | ALU|AND|K  | A&=k                     |                                                   |            | and  #0x%-8x                   |
+| 0x005c | and  | ALU|AND|X  | A&=X                     |                                                   |            | and  x                         |
+| 0x0060 | ld   | LD|MEM     | A=mem[k]                 |                                                   |            | ld   M[%u]                     |
+| 0x0061 | ldx  | LDX|MEM    | X=mem[k]                 |                                                   |            | ldx  M[%u]                     |
+| 0x0064 | lsh  | ALU|LSH|K  | A<<=k                    |                                                   |            | lsh  #%u                       |
+| 0x006c | lsh  | ALU|LSH|X  | A<<=X                    |                                                   |            | lsh  x                         |
+| 0x0074 | rsh  | ALU|RSH|K  | A>>=k                    |                                                   |            | rsh  #%u                       |
+| 0x007c | rsh  | ALU|RSH|X  | A>>=X                    |                                                   |            | rsh  x                         |
+| 0x0080 | ld   | LD|W|LEN   | A=wirelen                |                                                   |            | ld   #pktlen                   |
+| 0x0081 | ldx  | LDX|W|LEN  | X=wirelen                |                                                   |            | (n/a)                          |
+| 0x0084 | neg  | ALU|NEG    | A=-A                     |                                                   |            | neg                            |
+| 0x0087 | txa  | MISC|TXA   | A=X                      |                                                   |            | txa                            |
+| 0x00b1 | ldxb | LDX|MSH|B  | X=(p[k]&0xf)<<2          | k>=buflen                                         | SIGSEGV    | ldxb 4*([%u]&0xf)              |
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+| 0x0000 | MNNC | OPCODE     | DESCRIPTION              | EXCEPT CONDITION                                  | SIG        | FORMAT                         |
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+| 0xfffe | int  | INT        | interrupt                |                                                   |            | int  %u                        |
+| 0xffff | nop  | NOP        | no operation             |                                                   |            | nop                            |
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
 ```
 
 
