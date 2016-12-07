@@ -1,0 +1,12 @@
+ldh      [12]
+jeq      #0x86dd          jt 2    jf 7
+ldb      [20]
+jeq      #0x6             jt 10   jf 4
+jeq      #0x2c            jt 5    jf 11
+ldb      [54]
+jeq      #0x6             jt 10   jf 11
+jeq      #0x800           jt 8    jf 11
+ldb      [23]
+jeq      #0x6             jt 10   jf 11
+ret      #262144
+ret      #0

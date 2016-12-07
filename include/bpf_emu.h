@@ -54,7 +54,7 @@ public:
                         inst_ptr_[i].jt,
                         inst_ptr_[i].jf,
                         inst_ptr_[i].k, i);
-                dissas_line(&inst_ptr_[i]);
+                dissas_line(&inst_ptr_[i], i);
                 printf("\n");
             }
             printf("\n\n");
@@ -95,7 +95,7 @@ public:
 
             uint8_t* mem = 0;
             bool running = true;
-            while (running) {
+            for (size_t i=0; running; i++) {
                 using namespace bpf;
                 insn* inst = reinterpret_cast<insn*>(PC_);
 
@@ -108,7 +108,7 @@ public:
                         op2str(inst->code),
                         inst - inst_ptr_);
 
-                    dissas_line(inst);
+                    dissas_line(inst, inst-inst_ptr_);
                 }
 
                 PC_++;

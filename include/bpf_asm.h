@@ -4,7 +4,7 @@
 
 namespace bpf {
 
-void dissas_line(bpf::insn* inst)
+void dissas_line(bpf::insn* inst, size_t r)
 {
     dict d_org;
     dict d_bpf;
@@ -40,14 +40,14 @@ void dissas_line(bpf::insn* inst)
         case ST        : printf(fmt, k); break;
         case STX       : printf(fmt, k); break;
         case JMP|JA    : printf(fmt, k); break;
-        case JMP|JGT|K : printf(fmt, k, jt, jf); break;
-        case JMP|JGE|K : printf(fmt, k, jt, jf); break;
-        case JMP|JEQ|K : printf(fmt, k, jt, jf); break;
-        case JMP|JSET|K: printf(fmt, k, jt, jf); break;
-        case JMP|JGT|X : printf(fmt,    jt, jf); break;
-        case JMP|JGE|X : printf(fmt,    jt, jf); break;
-        case JMP|JEQ|X : printf(fmt,    jt, jf); break;
-        case JMP|JSET|X: printf(fmt,    jt, jf); break;
+        case JMP|JGT|K : printf(fmt, k, jt+r, jf+r); break;
+        case JMP|JGE|K : printf(fmt, k, jt+r, jf+r); break;
+        case JMP|JEQ|K : printf(fmt, k, jt+r, jf+r); break;
+        case JMP|JSET|K: printf(fmt, k, jt+r, jf+r); break;
+        case JMP|JGT|X : printf(fmt,    jt+r, jf+r); break;
+        case JMP|JGE|X : printf(fmt,    jt+r, jf+r); break;
+        case JMP|JEQ|X : printf(fmt,    jt+r, jf+r); break;
+        case JMP|JSET|X: printf(fmt,    jt+r, jf+r); break;
         case ALU|ADD|X : printf(fmt   ); break;
         case ALU|SUB|X : printf(fmt   ); break;
         case ALU|MUL|X : printf(fmt   ); break;
@@ -79,7 +79,7 @@ void dissas(insn* inst, size_t len)
         printf("(%03u) %04x %02x %02x %08x",
                 i, inst[i].code, inst[i].jt, inst[i].jf, inst[i].k);
         printf("        ");
-        dissas_line(&inst[i]);
+        dissas_line(&inst[i], i);
         printf("\n");
     }
 }

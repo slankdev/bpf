@@ -1,0 +1,4 @@
+ldh      [12]
+jeq      #0x806           jt 2    jf 3
+ret      #262144
+ret      #0

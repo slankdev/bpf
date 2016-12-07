@@ -1,0 +1,57 @@
+
+
+
+// RET Operation
+ret      #262144
+ret      #0
+
+// LD/LDX/ST/STX Operation
+ld       #0x0806
+ld       [11]
+ld       M[12]
+ld       #pktlen
+ldh      [12]
+ldb      [12]
+ldx      #0x0806
+ldx      M[12]
+st       M[11]
+stx      M[122]
+
+// JMP Operation
+jeq      #0x806     jt 24    jf 25
+jeq      x          jt 24    jf 25
+jgt      #0x806     jt 25    jf 26
+jgt      x          jt 25    jf 26
+jge      #0x806     jt 27    jf 26
+jge      x          jt 27    jf 26
+jset     #0x806     jt 27    jf 26
+jset     x          jt 27    jf 26
+
+// ALU Operation
+add      #11
+add      x
+sub      #11
+sub      x
+mul      #11
+mul      x
+div      #11
+div      x
+and      #11
+and      x
+or       #11
+or       x
+lsh      #11
+lsh      x
+rsh      #11
+rsh      x
+neg
+
+// MISC Operation
+tax
+txa
+
+// NO SUPPORT
+// ja       #1
+// int
+// nop
+// ldxb
