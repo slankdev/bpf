@@ -1,5 +1,5 @@
 
-
+// test all operation for assembler
 
 // RET Operation
 ret      #262144

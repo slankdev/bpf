@@ -183,11 +183,12 @@ def main():
 def write_instruction(opcode, jt, jf, k):
     inst = struct.pack("HBBI", opcode, jt, jf, k)
     outfile.write(inst)
-    print("{0}".format(inst))
+    # print("{0}".format(inst))
 
 
 def printf(str):
-    print("{0:30}->    ".format(str), end="")
+    a = 0
+    # print("{0:30}->    ".format(str), end="")
 
 
 
@@ -219,7 +220,7 @@ def jmp_condition(token, op, OPNUM, c):
            (jumpnum.match(token[5])    != None)):
                 k = const2num(token[1])
                 printf("{0} #{1} jt {2} jf {3}".format(op, hex(k), jt, jf))
-                write_instruction(JMP|OPNUM|K, jt-c, jf-c, k)
+                write_instruction(JMP|OPNUM|K, jt-c-1, jf-c-1, k)
                 return True
         if ((register_x.match(token[1]) != None) and \
            (jumptrue.match(token[2])    != None) and \
@@ -227,7 +228,7 @@ def jmp_condition(token, op, OPNUM, c):
            (jumpfalse.match(token[4])   != None) and \
            (jumpnum.match(token[5])     != None)):
                 printf("{0} x jt {1} jf {2}".format(op, jt, jf))
-                write_instruction(JMP|OPNUM|X, jt-c, jf-c, 0)
+                write_instruction(JMP|OPNUM|X, jt-c-1, jf-c-1, 0)
                 return True
     return False
 
