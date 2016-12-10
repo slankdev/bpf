@@ -10,6 +10,9 @@
 #include <bpf_asm.h>
 #include <bpf_dict.h>
 
+#include <vector>
+#include <slankdev/util.h>
+#include <slankdev/filefd.h>
 
 namespace bpf {
 
@@ -33,12 +36,31 @@ class vm {
     uint32_t    ret_code_;
     debug_level debug_;
 public:
-    vm(void* inst, size_t len) :
+    void init(void* inst, size_t len)
+    {
+        PC_       = (reinterpret_cast<insn*>(inst));
+        inst_ptr_ = (reinterpret_cast<insn*>(inst));
+        inst_len_ = (len);
+
+        printf("Instructions: len=%zd\n", inst_len_);
+        for (size_t i=0; i<len; i++) {
+            printf("%p ", inst_ptr_ + i);
+            printf("%04x %02x %02x %08x     (%03u)    ",
+                    inst_ptr_[i].code,
+                    inst_ptr_[i].jt,
+                    inst_ptr_[i].jf,
+                    inst_ptr_[i].k, i);
+            dissas_line(&inst_ptr_[i], i);
+            printf("\n");
+        }
+        printf("\n\n");
+    }
+    vm() :
         A_       (0x00000000),
         X_       (0x00000000),
-        PC_      (reinterpret_cast<insn*>(inst)),
-        inst_ptr_(reinterpret_cast<insn*>(inst)),
-        inst_len_(len),
+        PC_      (nullptr),
+        inst_ptr_(nullptr),
+        inst_len_(0),
         ret_code_(0xffffffff),
         debug_   (NORMAL)
     {
@@ -46,23 +68,34 @@ public:
             printf("\n\n");
             printf("Construct VM\n");
             print_registers();
-            printf("Instructions: len=%zd\n", inst_len_);
-            for (size_t i=0; i<len; i++) {
-                printf("%p ", inst_ptr_ + i);
-                printf("%04x %02x %02x %08x     (%03u)    ",
-                        inst_ptr_[i].code,
-                        inst_ptr_[i].jt,
-                        inst_ptr_[i].jf,
-                        inst_ptr_[i].k, i);
-                dissas_line(&inst_ptr_[i], i);
-                printf("\n");
-            }
-            printf("\n\n");
         }
     }
-    vm(void* inst, size_t len, debug_level lev) : vm(inst, len)
+
+    vm(void* inst, size_t len) : vm()
+    {
+        init(inst, len);
+    }
+    vm(void* inst, size_t len, debug_level lev) : vm()
     {
         debug_ = lev;
+        init(inst, len);
+    }
+    vm(const char* progfile) : vm()
+    {
+        static std::vector<insn> instructions;
+        instructions.clear();
+
+        slankdev::filefd fd;
+        fd.fopen(progfile, "rb");
+
+        while (1) {
+            insn i;
+            size_t res = fd.fread(&i, sizeof(i), 1);
+            if (res != 1)
+                break;
+            instructions.push_back(i);
+        }
+        init(instructions.data(), instructions.size());
     }
     ~vm()
     {
