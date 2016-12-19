@@ -1,11 +1,8 @@
 
-
-
-
 module alu(
 	input  [7:0] i1,
 	input  [7:0] i2,
-	input  [3:0] op,
+	input  [7:0] op,
 	output [7:0] o
 );
 

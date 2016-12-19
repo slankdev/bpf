@@ -1,0 +1,16 @@
+
+
+# Instruction
+
+
+ - register: r0 ~ r3 (8bit)
+ - instruction:
+    - 16bit (8,4bit,4bit)
+    - add,sub,div,mul,and,or,not,rsh,lsh
+
+## Subcomponents
+
+ - alu.v
+ - mux.v
+ - demux.v
+
