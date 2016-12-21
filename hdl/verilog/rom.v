@@ -3,11 +3,11 @@
 module rom(
 	input clk,
 	input [7:0] address,
-	output reg [15:0] data
+	output reg [7:0] data
 );
 
 
-	reg [15:0] mem [0:2047];
+	reg [7:0] mem [0:2047];
 
 	reg [7:0] i;
 	initial

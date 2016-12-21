@@ -4,41 +4,58 @@ module cpu(
 	input clk
 );
 	reg [7:0][0:3] regs;
-
 	reg  [7:0] pc;
-	wire [15:0] instruction;
-	rom rom0(clk, pc, instruction);
 
-	wire [7:0] opcode;
-	wire [3:0] in1_idx;
-	wire [3:0] in2_idx;
-	assign opcode  = instruction[15:8];
-	assign in1_idx = instruction[7:4];
-	assign in2_idx = instruction[3:0];
+	wire step1;
+	wire step2;
+	wire step3;
+	wire step4;
+	clk_gen clk_gen0(clk, step1, step2, step3, step4);
+
+	wire [7:0] instruction;
+	cpu_if cpu_if0(
+		step1,
+		pc,
+		instruction
+	);
 
 	wire [7:0] in1_val;
 	wire [7:0] in2_val;
-
-	mux mux_in1(
-		clk,
+	wire [1:0] dst_idx;
+	wire [3:0] opcode;
+	cpu_dc cpu_dc0(
+		step2,
 		regs,
-		in1_idx,
-		in1_val
-	);
-
-	mux mux_in2(
-		clk,
-		regs,
-		in2_idx,
-		in2_val
+		instruction,
+		opcode,
+		in1_val,
+		in2_val,
+		dst_idx
 	);
 
 	wire [7:0] out;
-	alu alu0(in1_val, in2_val, opcode, out);
+	cpu_ex cpu_ex0(
+		step3,
+		opcode,
+		in1_val,
+		in2_val,
+		out
+	);
 
-	always @(posedge clk) begin
-		pc = pc + 1;
+	wire [7:0][3:0] nregs;
+	cpu_wb cpu_wb0(
+		step4,
+		regs,
+		dst_idx,
+		out,
+		nregs
+	);
+	always @(negedge step4) begin
+		// regs = nregs;
 	end
 
+	// always @(posedge clk) begin
+	// 	pc = pc + 1;
+	// end
 
 endmodule

@@ -2,23 +2,25 @@
 module alu(
 	input  [7:0] i1,
 	input  [7:0] i2,
-	input  [7:0] op,
+	input  [3:0] op,
 	output [7:0] o
 );
 
-parameter op_add = 1;
-parameter op_sub = 2;
-parameter op_mul = 3;
-parameter op_div = 4;
-parameter op_and = 5;
-parameter op_or  = 6;
-parameter op_not = 7;
+parameter op_mov = 4'd0;
+parameter op_add = 4'd1;
+parameter op_sub = 4'd2;
+parameter op_mul = 4'd3;
+parameter op_div = 4'd4;
+parameter op_and = 4'd5;
+parameter op_or  = 4'd6;
+parameter op_not = 4'd7;
 
 	function [7:0] decode;
 	  input [7:0] a_i1;
 	  input [7:0] a_i2;
 	  input [3:0] a_ctl;
 	  case (a_ctl)
+		op_mov:  decode = a_i2;
 	  	op_add:  decode = a_i1 + a_i2;
 	  	op_sub:  decode = a_i1 - a_i2;
 		op_mul:  decode = a_i1 * a_i2;
