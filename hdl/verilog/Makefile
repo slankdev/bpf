@@ -13,6 +13,7 @@ SRC = main.v    \
 	  rom.v
 
 TOPMOD = main
+IVERILOG = /usr/local/bin/iverilog
 
 all:
-	iverilog -s $(TOPMOD) $(SRC)
+	$(IVERILOG) -s $(TOPMOD) $(SRC)
