@@ -1,6 +1,6 @@
 
 
-module cpu_dc(
+module decode(
 	input  clk,
 	input  [7:0][0:3] regs,
 	input  [7:0] instruction,
@@ -31,7 +31,12 @@ module cpu_dc(
 	);
 
 	always @(posedge clk) begin
-		$display("DECODE : %4d %4d", in1_val, in2_val);
+		$display("DECODE : %b %b %b   dst=%-d src=%-d",
+			instruction[7:4],
+			instruction[3:2],
+			instruction[1:0],
+			in1_val, in2_val
+		);
 	end
 
 endmodule

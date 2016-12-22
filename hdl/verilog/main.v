@@ -2,13 +2,13 @@
 
 `timescale 1ns / 1ps
 module main;
-	parameter STEP = 100;
+	parameter STEP = 100000;
 	always #(STEP/2) clk = ~clk;
 	initial
 	begin
 		#0    clk = 0;
 		#STEP clk = 1;
-		#(STEP * 10)
+		#(STEP * 16);
 		$finish;
 	end
 
@@ -22,7 +22,6 @@ module main;
 		cpu0.regs[3] = 7'd4;
 		cpu0.pc = 0;
 		cpu0.clk_gen0.cnt = 0;
-		cpu0.cpu_wb0.nregs = 0;
 	end
 
 	always #(STEP) begin
