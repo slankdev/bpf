@@ -41,7 +41,6 @@ module cpu(
 		opcode,
 		in1_val,
 		in2_val,
-		imm_val,
 		dst_idx
 	);
 
