@@ -23,9 +23,9 @@ module cpu(
 	wire [7:0] fetch_pc;
 	wire [15:0] instruction;
 	fetch FETCH(
-		.iCLK(clk_IF),
 		.iRST(iRST),
-		.iPC(fetch_pc),
+		.iCLK_IF(clk_IF),
+		.iCLK_WB(clk_WB),
 		.oINSTRUCTION(instruction)
 	);
 
@@ -52,9 +52,8 @@ module cpu(
 	wire [7:0] source2_val;
 	allocate ALLOCATE(
 		.iRST(iRST),
-		.iCLK(clk_AL),
+		.iCLK_AL(clk_AL),
 		.iCLK_WB(clk_WB),
-		.oNEXT_PC(fetch_pc),
 
 		// for writeback
 		.iNEXT_REG_IDX(dst_idx),

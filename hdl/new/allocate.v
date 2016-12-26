@@ -2,12 +2,8 @@
 
 module allocate(
 	input iRST,
-	input iCLK,
+	input iCLK_AL,
 	input iCLK_WB,
-
-	// registers
-	output [7:0] oNEXT_PC,
-	output [7:0] oNEXT_REGS [0:3],
 
 	// for writeback
 	input  [1:0] iNEXT_REG_IDX,
@@ -22,12 +18,10 @@ module allocate(
 	output [7:0] oSOURCE2_VAL
 );
 
-	reg [7:0] pc;
 	reg [7:0] regs [0:3];
 	reg [7:0] source1_val;
 	reg [7:0] source2_val;
 	always @(posedge iRST) begin
-		pc       <= 0;
 		regs[0]  <= 0;
 		regs[1]  <= 0;
 		regs[2]  <= 0;
@@ -67,23 +61,20 @@ module allocate(
 		.oRESULT(mux_source2)
 	);
 
-	always @(posedge iCLK) begin
+	always @(posedge iCLK_AL) begin
 		source1_val <= mux_source1;
 		source2_val <= mux_source2;
-		pc <= pc + 1;
 	end
 
-	assign oNEXT_PC      = pc     ;
-	assign oNEXT_REGS    = regs   ;
 	assign oSOURCE1_VAL  = source1_val;
 	assign oSOURCE2_VAL  = source2_val;
 
-	always @(negedge iCLK) begin
+	always @(negedge iCLK_AL) begin
 		$display("ALLOCATE: %-d %-d %-d %-d src1=%-d src2=%-d",
-			oNEXT_REGS[0],
-			oNEXT_REGS[1],
-			oNEXT_REGS[2],
-			oNEXT_REGS[3],
+			regs[0],
+			regs[1],
+			regs[2],
+			regs[3],
 			oSOURCE1_VAL,
 			oSOURCE2_VAL
 		);
