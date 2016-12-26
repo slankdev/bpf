@@ -1,9 +1,16 @@
 
 
-SRC = main.v    \
-	  clk_gen.v \
-	  cpu.v     \
-	  execute.v
+SRC = main.v     \
+	  clk_gen.v  \
+	  cpu.v      \
+	  execute.v  \
+	  execute_alu.v  \
+	  fetch.v    \
+	  decode.v   \
+	  decode_function.v \
+	  allocate.v \
+	  mux.v mux2.v
+
 
 	  # decode.v  \
 	  # alu.v     \
@@ -15,4 +22,4 @@ TOPMOD = main
 IVERILOG = /usr/local/bin/iverilog
 
 all:
-	$(IVERILOG) -s $(TOPMOD) $(SRC)
+	$(IVERILOG) -g2005-sv -s $(TOPMOD) $(SRC)
