@@ -30,3 +30,8 @@
 
 *.out
 *.vcd
+
+*incremental_db*
+*output_files*
+*simulation*
+*db*
