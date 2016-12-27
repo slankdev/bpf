@@ -1,0 +1,93 @@
+|top_de0
+BTN[0] => cnt[0].CLK
+BTN[0] => cnt[1].CLK
+BTN[0] => cnt[2].CLK
+BTN[0] => cnt[3].CLK
+BTN[1] => ~NO_FANOUT~
+BTN[2] => ~NO_FANOUT~
+SW[0] => SW[0].IN1
+SW[1] => SW[1].IN1
+SW[2] => SW[2].IN1
+SW[3] => SW[3].IN1
+SW[4] => ~NO_FANOUT~
+SW[5] => ~NO_FANOUT~
+SW[6] => ~NO_FANOUT~
+SW[7] => ~NO_FANOUT~
+SW[8] => ~NO_FANOUT~
+SW[9] => ~NO_FANOUT~
+LED[0] <= <GND>
+LED[1] <= <GND>
+LED[2] <= <GND>
+LED[3] <= <GND>
+LED[4] <= <GND>
+LED[5] <= <GND>
+LED[6] <= <GND>
+LED[7] <= <GND>
+LED[8] <= <GND>
+LED[9] <= <GND>
+HLED0[0] <= hseg_decode:D.oHSEG
+HLED0[1] <= hseg_decode:D.oHSEG
+HLED0[2] <= hseg_decode:D.oHSEG
+HLED0[3] <= hseg_decode:D.oHSEG
+HLED0[4] <= hseg_decode:D.oHSEG
+HLED0[5] <= hseg_decode:D.oHSEG
+HLED0[6] <= hseg_decode:D.oHSEG
+HLED0[7] <= hseg_decode:D.oHSEG
+HLED1[0] <= hseg_decode:D1.oHSEG
+HLED1[1] <= hseg_decode:D1.oHSEG
+HLED1[2] <= hseg_decode:D1.oHSEG
+HLED1[3] <= hseg_decode:D1.oHSEG
+HLED1[4] <= hseg_decode:D1.oHSEG
+HLED1[5] <= hseg_decode:D1.oHSEG
+HLED1[6] <= hseg_decode:D1.oHSEG
+HLED1[7] <= hseg_decode:D1.oHSEG
+HLED2[0] <= <GND>
+HLED2[1] <= <GND>
+HLED2[2] <= <GND>
+HLED2[3] <= <GND>
+HLED2[4] <= <GND>
+HLED2[5] <= <GND>
+HLED2[6] <= <GND>
+HLED2[7] <= <GND>
+HLED3[0] <= <GND>
+HLED3[1] <= <GND>
+HLED3[2] <= <GND>
+HLED3[3] <= <GND>
+HLED3[4] <= <GND>
+HLED3[5] <= <GND>
+HLED3[6] <= <GND>
+HLED3[7] <= <GND>
+
+
+|top_de0|hseg_decode:D
+iNUM[0] => Decoder0.IN3
+iNUM[1] => Decoder0.IN2
+iNUM[2] => Decoder0.IN1
+iNUM[3] => Decoder0.IN0
+iDOT => oHSEG[7].DATAIN
+oHSEG[0] <= WideOr6.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[1] <= WideOr5.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[2] <= WideOr4.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[3] <= WideOr3.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[4] <= WideOr2.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[5] <= WideOr1.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[6] <= WideOr0.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[7] <= iDOT.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|top_de0|hseg_decode:D1
+iNUM[0] => Decoder0.IN3
+iNUM[1] => Decoder0.IN2
+iNUM[2] => Decoder0.IN1
+iNUM[3] => Decoder0.IN0
+iDOT => oHSEG[7].DATAIN
+oHSEG[0] <= WideOr6.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[1] <= WideOr5.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[2] <= WideOr4.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[3] <= WideOr3.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[4] <= WideOr2.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[5] <= WideOr1.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[6] <= WideOr0.DB_MAX_OUTPUT_PORT_TYPE
+oHSEG[7] <= iDOT.DB_MAX_OUTPUT_PORT_TYPE
+
+
